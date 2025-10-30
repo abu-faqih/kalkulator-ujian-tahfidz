@@ -1,6 +1,8 @@
 KALKULATOR PENGUJI — IKHTIBAR & IMTIHAN
 =======================================
 
+link aplikasi : https://abu-faqih.github.io/kalkulator-ujian-tahfidz/
+
 Deskripsi Singkat:
 ------------------
 Aplikasi berbasis HTML + Bootstrap untuk menghitung kebutuhan penguji pada acara ikhtibar dan imtihan.
