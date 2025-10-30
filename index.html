@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kalkulator Penguji — Ikhtibar & Imtihan</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --card-radius: 18px;
+      --accent-1: #0d6efd;
+      --accent-2: #0dcaf0;
+      --text: #0b2447;
+      --muted: #6c757d;
+      --surface: #ffffff;
+      --surface-2: #f8fbff;
+      --input-bg: #fff;
+      --muted-weak: #9fb0d9;
+    }
+
+    /* Light theme */
+    body {
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #f6fbff 0%, #eef8ff 100%);
+      min-height: 100vh;
+      padding: 32px 16px;
+      color: var(--text);
+    }
+    .muted { color: var(--muted); }
+
+    .app-wrap { max-width: 980px; margin: 0 auto; }
+
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
+
+    .brand { display:flex; gap:12px; align-items:center; }
+    .brand .logo {
+      width:56px; height:56px; border-radius:12px; display:grid; place-items:center;
+      background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); color:#fff;
+      box-shadow: 0 6px 18px rgba(13,110,253,0.18); font-weight:700; font-size:20px;
+    }
+    .brand .brand-title { color: var(--text); font-weight:700; }
+    .brand .brand-sub { color: var(--muted); font-size:0.85rem; }
+
+    .card-ghost {
+      border-radius: var(--card-radius);
+      box-shadow: 0 12px 30px rgba(15,23,42,0.06);
+      border: none; overflow: hidden;
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    }
+
+    .section-title { font-weight:700; font-size:1.05rem; color: var(--text); }
+
+    .form-label, .form-check-label, .nav-pills .nav-link { color: var(--text); }
+    .form-label small { color: var(--muted); }
+    .form-control, .form-select {
+      background: var(--input-bg);
+      border: 1px solid rgba(11,38,71,0.08);
+      color: var(--text);
+      box-shadow: none;
+    }
+    .form-control::placeholder { color: var(--muted-weak); opacity:1; }
+    .form-select { color: var(--text); }
+    .input-group-text { background: rgba(255,255,255,0.9); border: 1px solid rgba(11,38,71,0.06); color:var(--text); }
+
+    .btn-custom {
+      background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); border: none; color: #fff;
+      box-shadow: 0 8px 20px rgba(13,110,253,0.12); border-radius: 999px; padding: 12px 18px; font-weight:600;
+    }
+    .btn-custom:active { transform: translateY(1px); }
+
+    .small-card {
+      border-radius: 12px; padding: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      box-shadow: 0 8px 18px rgba(11,38,71,0.04);
+    }
+
+    .result-panel { min-height: 140px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; padding: 20px; }
+    .result-number { font-size: 2.6rem; font-weight: 800; color: #0b66d1; letter-spacing: -0.02em; }
+    .result-text { color: var(--muted); text-align:center; }
+    .muted.small { color: var(--muted); font-size:0.9rem; }
+
+    /* Nav pills active */
+    .nav-pills .nav-link.active { background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#fff; box-shadow: 0 8px 18px rgba(13,110,253,0.12); }
+
+    /* Dark theme overrides */
+    body.dark {
+      --text: #e6f0ff;
+      --muted: #9fb0d9;
+      --surface: rgba(255,255,255,0.03);
+      --surface-2: rgba(255,255,255,0.02);
+      --input-bg: rgba(255,255,255,0.03);
+      --muted-weak: rgba(255,255,255,0.45);
+      background: linear-gradient(180deg, #071226 0%, #081a32 100%);
+      color: var(--text);
+    }
+
+    body.dark .card-ghost {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+
+    body.dark .small-card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow: 0 8px 18px rgba(0,0,0,0.6); }
+    body.dark .muted { color: var(--muted); }
+    body.dark .form-control, body.dark .form-select {
+      background: var(--input-bg);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+    body.dark .form-control::placeholder { color: var(--muted-weak); opacity:1; }
+    body.dark .input-group-text { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); color: var(--text); }
+    body.dark .form-label, body.dark .form-check-label, body.dark .nav-pills .nav-link { color: var(--text); }
+    body.dark .brand .brand-title { color: var(--text); }
+    body.dark .brand .brand-sub { color: var(--muted); }
+
+    body.dark .nav-pills .nav-link { color: var(--muted); border-radius: 8px; }
+    body.dark .nav-pills .nav-link.active { color: #001726; background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); box-shadow: 0 8px 18px rgba(13,110,253,0.12); }
+
+    body.dark .btn-outline-secondary { border-color: rgba(255,255,255,0.06); color: var(--muted); }
+    body.dark .btn-outline-primary { border-color: rgba(255,255,255,0.06); color: var(--muted); }
+
+    body.dark .result-number { color: #9fe0ff; }
+    body.dark .result-text { color: var(--muted); }
+
+    /* badge style overrides */
+    .badge.bg-light.text-dark { background: #f1f5f9; color: #06213a; }
+    body.dark .badge.bg-light.text-dark { background: rgba(255,255,255,0.03); color: var(--muted); border: 1px solid rgba(255,255,255,0.03); }
+
+    /* breakdown rows */
+    #breakdown .small { color: var(--muted); }
+    body.dark #breakdown .small { color: var(--muted); }
+
+    /* small responsive tweaks */
+    @media (max-width:768px) {
+      .result-number { font-size: 2rem; }
+      .brand .logo { width:48px; height:48px; font-size:18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"><i class="fa-solid fa-book-open"></i></div>
+        <div>
+          <div class="brand-title">Kalkulator Penguji</div>
+          <div class="brand-sub">Ikhtibar & Imtihan — Hitung kebutuhan penguji secara presisi</div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 align-items-center">
+        <button id="btnPrint" class="btn btn-outline-secondary btn-sm" title="Print hasil">
+          <i class="fa-solid fa-print"></i>
+        </button>
+
+        <div class="form-check form-switch ms-2">
+          <input class="form-check-input" type="checkbox" id="darkToggle">
+          <label class="form-check-label muted" for="darkToggle" style="font-size:0.85rem">Dark</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-ghost p-3 mb-4">
+      <div class="row g-3 align-items-start">
+        <div class="col-lg-7">
+          <ul class="nav nav-pills mb-3" id="calcTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tab-ikhtibar" data-bs-toggle="pill" data-bs-target="#pane-ikhtibar" type="button" role="tab">
+                <i class="fa-solid fa-user-check me-1"></i> Ikhtibar
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="tab-imtihan" data-bs-toggle="pill" data-bs-target="#pane-imtihan" type="button" role="tab">
+                <i class="fa-solid fa-stopwatch me-1"></i> Imtihan
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <!-- IKHTIBAR -->
+            <div class="tab-pane fade show active" id="pane-ikhtibar" role="tabpanel">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <label class="form-label">Jumlah Siswa per Juz <small class="muted"> (orang)</small></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-users"></i></span>
+                    <input id="jumlahSiswaIkhtibar" class="form-control" type="number" min="0" placeholder="Contoh: 120">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Jumlah Hari <small class="muted">(hari)</small></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
+                    <input id="jumlahHariIkhtibar" class="form-control" type="number" min="1" placeholder="2">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Jam Efektif / Hari <small class="muted">(jam)</small></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
+                    <input id="jamEfektifIkhtibar" class="form-control" type="number" min="1" placeholder="6">
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Kriteria Siswa</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-filter"></i></span>
+                    <select id="kriteriaIkhtibar" class="form-select">
+                      <option value="" selected disabled>Pilih kriteria...</option>
+                      <option value="50">Lancar — 50 menit / siswa</option>
+                      <option value="60">Normal — 60 menit / siswa</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-2">
+                  <button class="btn btn-custom" onclick="hitungKebutuhanPenguji('ikhtibar')">
+                    <i class="fa-solid fa-play me-2"></i> Hitung Ikhtibar
+                  </button>
+                  <button class="btn btn-outline-secondary" onclick="resetForm('ikhtibar')">
+                    <i class="fa-solid fa-rotate-left me-1"></i> Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- IMTIHAN -->
+            <div class="tab-pane fade" id="pane-imtihan" role="tabpanel">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <label class="form-label">Jumlah Siswa <small class="muted"> (orang)</small></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-users"></i></span>
+                    <input id="jumlahSiswaImtihan" class="form-control" type="number" min="0" placeholder="Contoh: 200">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Jumlah Hari <small class="muted">(hari)</small></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
+                    <input id="jumlahHariImtihan" class="form-control" type="number" min="1" placeholder="2">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Jam Efektif / Hari <small class="muted">(jam)</small></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
+                    <input id="jamEfektifImtihan" class="form-control" type="number" min="1" placeholder="6">
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Kriteria Siswa</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-filter"></i></span>
+                    <select id="kriteriaImtihan" class="form-select">
+                      <option value="" selected disabled>Pilih kriteria...</option>
+                      <option value="10">Lancar — 10 menit / siswa</option>
+                      <option value="15">Normal — 15 menit / siswa</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-2">
+                  <button class="btn btn-custom" onclick="hitungKebutuhanPenguji('imtihan')">
+                    <i class="fa-solid fa-play me-2"></i> Hitung Imtihan
+                  </button>
+                  <button class="btn btn-outline-secondary" onclick="resetForm('imtihan')">
+                    <i class="fa-solid fa-rotate-left me-1"></i> Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RESULT PANEL -->
+        <div class="col-lg-5">
+          <div class="small-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <div class="muted">Hasil Perhitungan</div>
+                <div style="font-weight:700; font-size:1rem; color:var(--text)">Ringkasan & Rincian</div>
+              </div>
+              <div>
+                <span class="badge bg-light text-dark" id="badgeType" style="font-weight:600">—</span>
+              </div>
+            </div>
+
+            <div id="resultArea" class="result-panel">
+              <div class="result-number" id="resultNumber">—</div>
+              <div class="result-text muted" id="resultText">Masukkan data lalu tekan "Hitung".</div>
+
+              <div class="w-100 mt-2" id="breakdown" style="display:none;">
+                <div class="d-flex justify-content-between small"><div class="muted small">Total menit yg dibutuhkan</div><div id="totalMenit" class="muted small">0 m</div></div>
+                <div class="d-flex justify-content-between small"><div class="muted small">Total jam efektif tersedia</div><div id="totalJamEfektif" class="muted small">0 jam</div></div>
+                <div class="d-flex justify-content-between small"><div class="muted small">Jumlah siswa / penguji (rata-rata)</div><div id="siswaPerPenguji" class="muted small">—</div></div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-2">
+              <button class="btn btn-outline-primary w-100" onclick="copyResult()"><i class="fa-regular fa-copy me-2"></i> Salin Hasil</button>
+              <button class="btn btn-outline-success w-100" onclick="printResult()"><i class="fa-solid fa-file-export me-2"></i> Ekspor / Cetak</button>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- row -->
+    </div> <!-- card -->
+  </div> <!-- app-wrap -->
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Utilities
+    function fmtNumber(n){ return (n===null||n===undefined) ? '—' : n.toString(); }
+
+    // Core calculation
+    function hitungKebutuhanPenguji(tipe){
+      let jumlahSiswa, jumlahHari, jamEfektif, kriteria;
+      const badge = document.getElementById('badgeType');
+
+      if(tipe === 'ikhtibar'){
+        jumlahSiswa = parseInt(document.getElementById('jumlahSiswaIkhtibar').value);
+        jumlahHari  = parseInt(document.getElementById('jumlahHariIkhtibar').value);
+        jamEfektif  = parseInt(document.getElementById('jamEfektifIkhtibar').value);
+        kriteria    = parseInt(document.getElementById('kriteriaIkhtibar').value);
+        badge.innerText = 'Ikhtibar';
+        badge.className = 'badge bg-info text-dark';
+      } else {
+        jumlahSiswa = parseInt(document.getElementById('jumlahSiswaImtihan').value);
+        jumlahHari  = parseInt(document.getElementById('jumlahHariImtihan').value);
+        jamEfektif  = parseInt(document.getElementById('jamEfektifImtihan').value);
+        kriteria    = parseInt(document.getElementById('kriteriaImtihan').value);
+        badge.innerText = 'Imtihan';
+        badge.className = 'badge bg-warning text-dark';
+      }
+
+      const resultNumber = document.getElementById('resultNumber');
+      const resultText   = document.getElementById('resultText');
+      const breakdown    = document.getElementById('breakdown');
+      const totalMenitEl = document.getElementById('totalMenit');
+      const totalJamEfektifEl = document.getElementById('totalJamEfektif');
+      const siswaPerPengujiEl = document.getElementById('siswaPerPenguji');
+
+      // validation
+      if (!jumlahSiswa || jumlahSiswa <= 0 || !jumlahHari || jumlahHari <= 0 || !jamEfektif || jamEfektif <= 0 || !kriteria || kriteria <= 0){
+        resultNumber.innerText = '—';
+        resultText.innerText = 'Masukkan semua data dengan benar.';
+        breakdown.style.display = 'none';
+        return;
+      }
+
+      // calculations (kriteria in minutes)
+      const totalMenitSiswa = jumlahSiswa * kriteria; // menit
+      const totalMenitEfektif = jumlahHari * jamEfektif * 60; // menit
+      const jumlahPenguji = Math.ceil(totalMenitSiswa / totalMenitEfektif);
+
+      // additional helpful numbers
+      const totalJamEfektif = (totalMenitEfektif / 60);
+      const siswaPerPenguji = (jumlahPenguji > 0) ? (jumlahSiswa / jumlahPenguji) : jumlahSiswa;
+
+      // show breakdown
+      totalMenitEl.innerText = totalMenitSiswa.toLocaleString() + ' m';
+      totalJamEfektifEl.innerText = totalJamEfektif.toLocaleString(undefined, {maximumFractionDigits:1}) + ' jam';
+      siswaPerPengujiEl.innerText = siswaPerPenguji % 1 === 0 ? siswaPerPenguji + ' siswa' : siswaPerPenguji.toFixed(1) + ' siswa';
+      breakdown.style.display = 'block';
+
+      // animate big number
+      animateCount(resultNumber, parseInt(resultNumber.innerText) || 0, jumlahPenguji, 700);
+      resultText.innerText = `Dibutuhkan ${jumlahPenguji} penguji (dibulatkan ke atas).`;
+    }
+
+    // animate numeric counter
+    function animateCount(el, start, end, duration){
+      start = Number(start) || 0;
+      end = Number(end) || 0;
+      if(start === end){
+        el.innerText = String(end);
+        return;
+      }
+      const range = end - start;
+      let startTime = null;
+      function step(timestamp){
+        if(!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const value = Math.round(start + range * easeOutCubic(progress));
+        el.innerText = value;
+        if(progress < 1) window.requestAnimationFrame(step);
+      }
+      window.requestAnimationFrame(step);
+    }
+    function easeOutCubic(t){ return (--t)*t*t + 1; }
+
+    // reset form
+    function resetForm(tipe){
+      if(tipe === 'ikhtibar'){
+        document.getElementById('jumlahSiswaIkhtibar').value = '';
+        document.getElementById('jumlahHariIkhtibar').value = '';
+        document.getElementById('jamEfektifIkhtibar').value = '';
+        document.getElementById('kriteriaIkhtibar').selectedIndex = 0;
+      } else {
+        document.getElementById('jumlahSiswaImtihan').value = '';
+        document.getElementById('jumlahHariImtihan').value = '';
+        document.getElementById('jamEfektifImtihan').value = '';
+        document.getElementById('kriteriaImtihan').selectedIndex = 0;
+      }
+      // clear result
+      document.getElementById('resultNumber').innerText = '—';
+      document.getElementById('resultText').innerText = 'Masukkan data lalu tekan "Hitung".';
+      document.getElementById('breakdown').style.display = 'none';
+      document.getElementById('badgeType').innerText = '—';
+      document.getElementById('badgeType').className = 'badge bg-light text-dark';
+    }
+
+    // copy result to clipboard
+    async function copyResult(){
+      const type = document.getElementById('badgeType').innerText;
+      const jumlah = document.getElementById('resultNumber').innerText;
+      const teks = document.getElementById('resultText').innerText;
+      const breakdown = document.getElementById('breakdown').innerText.replace(/\n/g,' | ');
+      const payload = `Type: ${type}\nPenguji: ${jumlah}\n${teks}\n${breakdown}`;
+      try {
+        await navigator.clipboard.writeText(payload);
+        alert('Hasil disalin ke clipboard.');
+      } catch(e){
+        alert('Tidak dapat menyalin. Silakan salin manual.');
+      }
+    }
+
+    // print only result area
+    function printResult(){
+      const printContent = document.querySelector('.small-card').outerHTML;
+      const win = window.open('', '_blank', 'width=800,height=600');
+      win.document.write(`<html><head><title>Hasil Perhitungan</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>body{font-family:Inter,Arial;padding:24px;}</style>
+        </head><body>${printContent}</body></html>`);
+      win.document.close();
+      win.print();
+    }
+
+    // print button top
+    document.getElementById('btnPrint').addEventListener('click', printResult);
+
+    // dark mode toggle
+    document.getElementById('darkToggle').addEventListener('change', function(e){
+      document.body.classList.toggle('dark', e.target.checked);
+    });
+
+    // init
+    resetForm('ikhtibar');
+    resetForm('imtihan');
+  </script>
+</body>
+</html>
